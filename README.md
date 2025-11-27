@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-yellowgreen.svg?style=for-the-badge&label=License)](https://github.com/Osmerion/omittable-jackson/blob/master/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/com.osmerion.omittable/omittable-jackson.svg?style=for-the-badge&label=Maven%20Central)](https://maven-badges.herokuapp.com/maven-central/com.osmerion.omittable/omittable-jackson)
-![Kotlin](https://img.shields.io/badge/Kotlin-2%2E2-green.svg?style=for-the-badge&color=a97bff&logo=Kotlin)
+[![JavaDoc](https://img.shields.io/maven-central/v/com.osmerion.omittable/omittable-jackson.svg?style=for-the-badge&label=JavaDoc&color=blue)](https://javadoc.io/doc/com.osmerion.omittable/omittable-jackson)
 ![Java](https://img.shields.io/badge/Java-17-green.svg?style=for-the-badge&color=b07219&logo=Java)
 
 A support library providing a [Jackson](https://github.com/FasterXML/jackson) module for the
