@@ -5,8 +5,8 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-2%2E2-green.svg?style=for-the-badge&color=a97bff&logo=Kotlin)
 ![Java](https://img.shields.io/badge/Java-17-green.svg?style=for-the-badge&color=b07219&logo=Java)
 
-A support library providing a Jackson module for the [Omittable](https://github.com/Osmerion/Omittable) library to
-support serializing and deserializing omittable types.
+A support library providing a [Jackson](https://github.com/FasterXML/jackson) module for the
+[Omittable](https://github.com/Osmerion/Omittable) library to support serializing and deserializing omittable types.
 
 
 ## Usage
