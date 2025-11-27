@@ -14,5 +14,60 @@
  * limitations under the License.
  */
 plugins {
-    alias(buildDeps.plugins.kotlin.multiplatform) apply false
+    alias(buildDeps.plugins.gradle.buildconfig)
+    id("com.osmerion.maven-publish-conventions")
+    `java-library`
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks {
+    withType<JavaCompile>().configureEach {
+        options.release = 17
+    }
+
+    withType<Test>().configureEach {
+        useJUnitPlatform()
+    }
+}
+
+publishing {
+    publications.register<MavenPublication>("mavenJava") {
+        from(components["java"])
+
+        pom {
+            description = "A support library providing a Jackson module for the Omittable library to support serializing and deserializing omittable types."
+        }
+    }
+}
+
+buildConfig {
+    packageName = "com.osmerion.omittable.jackson.internal"
+
+    buildConfigField("GROUP_ID", publishing.publications.named<MavenPublication>("mavenJava").map { it.groupId })
+    buildConfigField("ARTIFACT_ID", publishing.publications.named<MavenPublication>("mavenJava").map { it.artifactId })
+    buildConfigField("VERSION_MAJOR", version.toString().substringBefore('.').toInt())
+    buildConfigField("VERSION_MINOR", version.toString().substringAfter('.').substringBefore('.').toInt())
+    buildConfigField("VERSION_PATCH", version.toString().substringAfter('.').substringAfter('.').substringBefore('-').toInt())
+    buildConfigField("SNAPSHOT_INFO", version.toString().let { if (it.contains('-')) it.substringAfter('-') else null })
+}
+
+dependencies {
+    api(libs.jackson.databind)
+    api(libs.jspecify)
+    api(libs.omittable)
+
+    testImplementation(project.dependencies.platform(buildDeps.junit.bom))
+    testImplementation(buildDeps.assertj.core)
+    testImplementation(buildDeps.junit.jupiter.api)
+
+    testRuntimeOnly(buildDeps.junit.jupiter.engine)
+    testRuntimeOnly(buildDeps.junit.platform.launcher)
 }
