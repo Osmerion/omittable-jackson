@@ -15,7 +15,6 @@
  */
 package com.osmerion.omittable.jackson;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osmerion.omittable.Omittable;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +44,6 @@ public final class OmittableJacksonJavaTest {
     void setUp() {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new OmittableModule());
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
     }
 
     @Test

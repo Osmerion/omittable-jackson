@@ -44,12 +44,9 @@ public final class OmittableUnwrappingBeanPropertyWriter extends UnwrappingBeanP
 
     @Override
     public void serializeAsField(Object bean, JsonGenerator gen, SerializerProvider prov) throws Exception {
-        if (this._nullSerializer == null) {
-            Object value = this.get(bean);
-            if (value == null || value.equals(Omittable.absent())) {
-                return;
-            }
-        }
+        Object value = this.get(bean);
+        if (value != null && value.equals(Omittable.absent())) return;
+        if (this._nullSerializer == null && value == null) return;
 
         super.serializeAsField(bean, gen, prov);
     }
