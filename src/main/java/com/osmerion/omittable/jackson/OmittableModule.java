@@ -27,6 +27,13 @@ import com.osmerion.omittable.Omittable;
 import com.osmerion.omittable.jackson.internal.*;
 import org.jspecify.annotations.Nullable;
 
+/**
+ * A Jackson {@link Module} that adds support for {@link Omittable} types.
+ *
+ * @since   0.1.0
+ *
+ * @author  Leon Linhart
+ */
 public final class OmittableModule extends Module {
 
     @Override
