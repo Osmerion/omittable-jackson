@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.osmerion.omittable.jackson.internal;
+package com.osmerion.omittable.jackson3.internal;
 
-import com.fasterxml.jackson.databind.BeanDescription;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.SerializationConfig;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import tools.jackson.databind.BeanDescription;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.SerializationConfig;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.ValueSerializerModifier;
 import com.osmerion.omittable.Omittable;
 
 import java.util.List;
 
-public final class OmittableBeanSerializerModifier extends BeanSerializerModifier {
+public final class OmittableBeanSerializerModifier extends ValueSerializerModifier {
 
     @Override
     public List<BeanPropertyWriter> changeProperties(
         SerializationConfig config,
-        BeanDescription beanDesc,
+        BeanDescription.Supplier beanDesc,
         List<BeanPropertyWriter> beanProperties
     ) {
         for (int i = 0; i < beanProperties.size(); ++i) {

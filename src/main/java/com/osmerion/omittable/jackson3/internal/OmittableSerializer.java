@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.osmerion.omittable.jackson.internal;
+package com.osmerion.omittable.jackson3.internal;
 
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.ser.std.ReferenceTypeSerializer;
-import com.fasterxml.jackson.databind.type.ReferenceType;
-import com.fasterxml.jackson.databind.util.NameTransformer;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.BeanProperty;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueSerializer;
+import tools.jackson.databind.jsontype.TypeSerializer;
+import tools.jackson.databind.ser.std.ReferenceTypeSerializer;
+import tools.jackson.databind.type.ReferenceType;
+import tools.jackson.databind.util.NameTransformer;
 import com.osmerion.omittable.Omittable;
 import org.jspecify.annotations.Nullable;
 
 public final class OmittableSerializer extends ReferenceTypeSerializer<Omittable<?>> {
 
-    public OmittableSerializer(ReferenceType fullType, boolean staticTyping, @Nullable TypeSerializer vts, JsonSerializer<Object> ser) {
+    public OmittableSerializer(ReferenceType fullType, boolean staticTyping, @Nullable TypeSerializer vts, ValueSerializer<Object> ser) {
         super(fullType, staticTyping, vts, ser);
     }
 
     private OmittableSerializer(
-        OmittableSerializer base, BeanProperty property, TypeSerializer vts, JsonSerializer<?> valueSer,
+        OmittableSerializer base, BeanProperty property, TypeSerializer vts, ValueSerializer<?> valueSer,
         NameTransformer unwrapper, Object suppressableValue, boolean suppressNulls
     ) {
         super(base, property, vts, valueSer, unwrapper, suppressableValue, suppressNulls);
@@ -40,7 +41,7 @@ public final class OmittableSerializer extends ReferenceTypeSerializer<Omittable
 
     @Override
     protected ReferenceTypeSerializer<Omittable<?>> withResolved(
-        BeanProperty prop, TypeSerializer vts, JsonSerializer<?> valueSer, NameTransformer unwrapper
+        BeanProperty prop, TypeSerializer vts, ValueSerializer<?> valueSer, NameTransformer unwrapper
     ) {
         return new OmittableSerializer(this, prop, vts, valueSer, unwrapper, _suppressableValue, _suppressNulls);
     }
@@ -51,7 +52,7 @@ public final class OmittableSerializer extends ReferenceTypeSerializer<Omittable
     }
 
     @Override
-    public boolean isEmpty(SerializerProvider provider, Omittable<?> value) {
+    public boolean isEmpty(SerializationContext provider, Omittable<?> value) throws JacksonException {
         return value.isAbsent();
     }
 

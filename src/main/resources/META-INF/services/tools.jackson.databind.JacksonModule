@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-com.osmerion.omittable.jackson.OmittableModule
+com.osmerion.omittable.jackson3.OmittableModule

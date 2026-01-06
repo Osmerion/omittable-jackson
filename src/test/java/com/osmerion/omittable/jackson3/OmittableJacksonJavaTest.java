@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.osmerion.omittable.jackson;
+package com.osmerion.omittable.jackson3;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osmerion.omittable.Omittable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.PropertyNamingStrategies;
+import tools.jackson.databind.json.JsonMapper;
 
-import java.awt.*;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,11 +37,13 @@ public final class OmittableJacksonJavaTest {
     private static final ObjectMapper manualMapper, autoDiscoveryMapper;
 
     static {
-        manualMapper = new ObjectMapper();
-        manualMapper.registerModule(new OmittableModule());
+        manualMapper = JsonMapper.builder()
+            .addModule(new OmittableModule())
+            .build();
 
-        autoDiscoveryMapper = new ObjectMapper();
-        autoDiscoveryMapper.findAndRegisterModules();
+        autoDiscoveryMapper = JsonMapper.builder()
+            .findAndAddModules()
+            .build();
     }
 
     private static Stream<ObjectMapper> objectMapper() {
@@ -62,7 +66,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldSerializePresentValuesCorrectly(ObjectMapper objectMapper) throws Exception {
+    void shouldSerializePresentValuesCorrectly(ObjectMapper objectMapper) {
         TestDto dto = new TestDto();
         dto.setName(Omittable.of("Test"));
         dto.setCount(Omittable.of(123));
@@ -76,7 +80,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldOmitAbsentValuesFromJsonOutput(ObjectMapper objectMapper) throws Exception {
+    void shouldOmitAbsentValuesFromJsonOutput(ObjectMapper objectMapper) {
         TestDto dto = new TestDto();
         dto.setName(Omittable.of("Only Name"));
 
@@ -87,7 +91,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldSerializeAPresentButNullValue(ObjectMapper objectMapper) throws Exception {
+    void shouldSerializeAPresentButNullValue(ObjectMapper objectMapper) {
         TestDto dto = new TestDto();
         dto.setNullableValue(Omittable.of(null));
 
@@ -98,7 +102,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldDeserializePresentValuesCorrectly(ObjectMapper objectMapper) throws Exception {
+    void shouldDeserializePresentValuesCorrectly(ObjectMapper objectMapper) {
         String json = "{\"name\":\"Test\",\"count\":123,\"nullableValue\":null}";
         TestDto dto = objectMapper.readValue(json, TestDto.class);
 
@@ -109,7 +113,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldDeserializeMissingFieldsToAbsent(ObjectMapper objectMapper) throws Exception {
+    void shouldDeserializeMissingFieldsToAbsent(ObjectMapper objectMapper) {
         String json = "{\"name\":\"Only Name\"}";
         TestDto dto = objectMapper.readValue(json, TestDto.class);
 
@@ -132,7 +136,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldOmitAbsentValuesWhenUnwrapped(ObjectMapper objectMapper) throws Exception {
+    void shouldOmitAbsentValuesWhenUnwrapped(ObjectMapper objectMapper) {
         Parent parent = new Parent();
         String json = objectMapper.writeValueAsString(parent);
 
@@ -144,10 +148,11 @@ public final class OmittableJacksonJavaTest {
     }
 
     @Test
-    void shouldRespectPropertyNamingStrategy() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new OmittableModule());
-        objectMapper.setPropertyNamingStrategy(com.fasterxml.jackson.databind.PropertyNamingStrategies.SNAKE_CASE);
+    void shouldRespectPropertyNamingStrategy() {
+        ObjectMapper objectMapper = JsonMapper.builder()
+            .addModule(new OmittableModule())
+            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .build();
 
         TestDto dto = new TestDto();
         dto.setNullableValue(Omittable.of("test"));
@@ -166,7 +171,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldHandleGenericCollectionsCorrectly(ObjectMapper objectMapper) throws Exception {
+    void shouldHandleGenericCollectionsCorrectly(ObjectMapper objectMapper) {
         CollectionDto dto = new CollectionDto();
         dto.setItems(Omittable.of(java.util.List.of("A", "B")));
 
@@ -185,7 +190,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldHandleEmptyOmittableObjectsCorrectly(ObjectMapper objectMapper) throws Exception {
+    void shouldHandleEmptyOmittableObjectsCorrectly(ObjectMapper objectMapper) {
         NestedDto dto = new NestedDto();
         // The property itself is present, but the object it points to is empty
         dto.setNested(Omittable.of(new TestDto()));
@@ -213,7 +218,7 @@ public final class OmittableJacksonJavaTest {
 
     @ParameterizedTest
     @MethodSource("objectMapper")
-    void shouldHandlePolymorphicTypesInsideOmittable(ObjectMapper objectMapper) throws Exception {
+    void shouldHandlePolymorphicTypesInsideOmittable(ObjectMapper objectMapper) {
         PolyDto dto = new PolyDto();
         dto.setShape(Omittable.of(new Circle()));
 
@@ -225,7 +230,7 @@ public final class OmittableJacksonJavaTest {
     @MethodSource("objectMapper")
     void shouldSupportGenericReferenceTypeResolution(ObjectMapper objectMapper) {
         // This ensures the TypeModifier is working and the ReferenceType is correctly resolved
-        java.lang.reflect.Type type = new com.fasterxml.jackson.core.type.TypeReference<Omittable<String>>() {}.getType();
+        java.lang.reflect.Type type = new TypeReference<Omittable<String>>() {}.getType();
         JavaType javaType = objectMapper.getTypeFactory().constructType(type);
 
         assertThat(javaType.isReferenceType()).isTrue();

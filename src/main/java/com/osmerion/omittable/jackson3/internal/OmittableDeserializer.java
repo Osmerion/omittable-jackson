@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.osmerion.omittable.jackson.internal;
+package com.osmerion.omittable.jackson3.internal;
 
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.deser.ValueInstantiator;
-import com.fasterxml.jackson.databind.deser.std.ReferenceTypeDeserializer;
-import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.deser.ValueInstantiator;
+import tools.jackson.databind.deser.std.ReferenceTypeDeserializer;
+import tools.jackson.databind.jsontype.TypeDeserializer;
 import com.osmerion.omittable.Omittable;
 import org.jspecify.annotations.Nullable;
 
@@ -31,23 +30,23 @@ public final class OmittableDeserializer extends ReferenceTypeDeserializer<Omitt
         JavaType fullType,
         @Nullable ValueInstantiator inst,
         TypeDeserializer typeDeser,
-        JsonDeserializer<?> deser
+        ValueDeserializer<?> deser
     ) {
         super(fullType, inst, typeDeser, deser);
     }
 
     @Override
-    public OmittableDeserializer withResolved(TypeDeserializer typeDeser, JsonDeserializer<?> valueDeser) {
+    public OmittableDeserializer withResolved(TypeDeserializer typeDeser, ValueDeserializer<?> valueDeser) {
         return new OmittableDeserializer(_fullType, _valueInstantiator, typeDeser, valueDeser);
     }
 
     @Override
-    public Omittable<?> getNullValue(DeserializationContext ctxt) throws JsonMappingException {
+    public Omittable<?> getNullValue(DeserializationContext ctxt) {
         return Omittable.of(_valueDeserializer.getNullValue(ctxt));
     }
 
     @Override
-    public Object getEmptyValue(DeserializationContext ctxt) throws JsonMappingException {
+    public Object getEmptyValue(DeserializationContext ctxt) {
         return this.getNullValue(ctxt);
     }
 

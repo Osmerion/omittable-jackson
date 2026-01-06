@@ -49,7 +49,7 @@ publishing {
 }
 
 buildConfig {
-    packageName = "com.osmerion.omittable.jackson.internal"
+    packageName = "com.osmerion.omittable.jackson3.internal"
 
     buildConfigField("GROUP_ID", publishing.publications.named<MavenPublication>("mavenJava").map { it.groupId })
     buildConfigField("ARTIFACT_ID", publishing.publications.named<MavenPublication>("mavenJava").map { it.artifactId })

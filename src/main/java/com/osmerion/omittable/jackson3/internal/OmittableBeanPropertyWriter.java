@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.osmerion.omittable.jackson.internal;
+package com.osmerion.omittable.jackson3.internal;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.PropertyName;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.util.NameTransformer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.PropertyName;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.util.NameTransformer;
 import com.osmerion.omittable.Omittable;
 
 public final class OmittableBeanPropertyWriter extends BeanPropertyWriter {
@@ -43,12 +43,12 @@ public final class OmittableBeanPropertyWriter extends BeanPropertyWriter {
     }
 
     @Override
-    public void serializeAsField(Object bean, JsonGenerator gen, SerializerProvider prov) throws Exception {
+    public void serializeAsProperty(Object bean, JsonGenerator g, SerializationContext ctxt) throws Exception {
         Object value = this.get(bean);
         if (value != null && value.equals(Omittable.absent())) return;
         if (this._nullSerializer == null && value == null) return;
 
-        super.serializeAsField(bean, gen, prov);
+        super.serializeAsProperty(bean, g, ctxt);
     }
 
 }

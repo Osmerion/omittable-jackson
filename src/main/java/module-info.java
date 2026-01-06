@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.fasterxml.jackson.databind.Module;
-import com.osmerion.omittable.jackson.OmittableModule;
+import com.osmerion.omittable.jackson3.OmittableModule;
 import org.jspecify.annotations.NullMarked;
+import tools.jackson.databind.JacksonModule;
 
 /** Defines the {@link OmittableModule} that provides Jackson integration for omittable types. */
 @NullMarked
-module com.osmerion.omittable.jackson {
+module com.osmerion.omittable.jackson3 {
 
-    requires transitive com.fasterxml.jackson.databind;
     requires transitive com.osmerion.omittable;
     requires transitive org.jspecify;
+    requires transitive tools.jackson.databind;
 
-    exports com.osmerion.omittable.jackson;
+    exports com.osmerion.omittable.jackson3;
 
-    provides Module with OmittableModule;
+    provides JacksonModule with OmittableModule;
 
 }

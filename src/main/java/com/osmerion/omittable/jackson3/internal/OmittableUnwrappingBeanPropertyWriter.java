@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.osmerion.omittable.jackson.internal;
+package com.osmerion.omittable.jackson3.internal;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.io.SerializedString;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanPropertyWriter;
-import com.fasterxml.jackson.databind.util.NameTransformer;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.core.io.SerializedString;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.bean.UnwrappingBeanPropertyWriter;
+import tools.jackson.databind.util.NameTransformer;
 import com.osmerion.omittable.Omittable;
 
 public final class OmittableUnwrappingBeanPropertyWriter extends UnwrappingBeanPropertyWriter {
@@ -43,12 +43,12 @@ public final class OmittableUnwrappingBeanPropertyWriter extends UnwrappingBeanP
     }
 
     @Override
-    public void serializeAsField(Object bean, JsonGenerator gen, SerializerProvider prov) throws Exception {
+    public void serializeAsProperty(Object bean, JsonGenerator gen, SerializationContext prov) throws Exception {
         Object value = this.get(bean);
         if (value != null && value.equals(Omittable.absent())) return;
         if (this._nullSerializer == null && value == null) return;
 
-        super.serializeAsField(bean, gen, prov);
+        super.serializeAsProperty(bean, gen, prov);
     }
 
 }

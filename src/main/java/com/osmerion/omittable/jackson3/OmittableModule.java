@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.osmerion.omittable.jackson;
+package com.osmerion.omittable.jackson3;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.deser.Deserializers;
-import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
-import com.fasterxml.jackson.databind.ser.Serializers;
-import com.fasterxml.jackson.databind.type.ReferenceType;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import tools.jackson.core.Version;
+import tools.jackson.databind.*;
+import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.deser.Deserializers;
+import tools.jackson.databind.jsontype.TypeDeserializer;
+import tools.jackson.databind.jsontype.TypeSerializer;
+import tools.jackson.databind.ser.Serializers;
+import tools.jackson.databind.type.ReferenceType;
 import com.osmerion.omittable.Omittable;
-import com.osmerion.omittable.jackson.internal.*;
+import com.osmerion.omittable.jackson3.internal.*;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A Jackson {@link Module} that adds support for {@link Omittable} types.
+ * A Jackson {@link JacksonModule} that adds support for {@link Omittable} types.
  *
  * @since   0.1.0
  *
  * @author  Leon Linhart
  */
-public final class OmittableModule extends Module {
+public final class OmittableModule extends JacksonModule {
 
     @Override
     public void setupModule(SetupContext context) {
@@ -45,7 +46,7 @@ public final class OmittableModule extends Module {
         context.addTypeModifier(new OmittableTypeModifier());
 
         // Allow enabling "treat Optional.empty() like Java nulls"
-        context.addBeanSerializerModifier(new OmittableBeanSerializerModifier());
+        context.addSerializerModifier(new OmittableBeanSerializerModifier());
     }
 
     @Override
@@ -68,13 +69,12 @@ public final class OmittableModule extends Module {
     private static final class OmittableDeserializers extends Deserializers.Base {
 
         @Override
-        public @Nullable JsonDeserializer<?> findReferenceDeserializer(
-            ReferenceType refType,
-            DeserializationConfig config,
-            BeanDescription beanDesc,
-            TypeDeserializer contentTypeDeserializer,
-            JsonDeserializer<?> contentDeserializer
-        ) {
+        public boolean hasDeserializerFor(DeserializationConfig config, Class<?> valueType) {
+            return valueType.equals(Omittable.class);
+        }
+
+        @Override
+        public @Nullable ValueDeserializer<?> findReferenceDeserializer(ReferenceType refType, DeserializationConfig config, BeanDescription.Supplier beanDescRef, TypeDeserializer contentTypeDeserializer, ValueDeserializer<?> contentDeserializer) {
             if (refType.hasRawClass(Omittable.class)) {
                 return new OmittableDeserializer(refType, null, contentTypeDeserializer, contentDeserializer);
             }
@@ -87,17 +87,11 @@ public final class OmittableModule extends Module {
     private static final class OmittableSerializers extends Serializers.Base {
 
         @Override
-        public @Nullable JsonSerializer<?> findReferenceSerializer(
-            SerializationConfig config,
-            ReferenceType refType,
-            BeanDescription beanDesc,
-            @Nullable TypeSerializer contentTypeSerializer,
-            JsonSerializer<Object> contentValueSerializer
-        ) {
-            Class<?> raw = refType.getRawClass();
+        public @Nullable ValueSerializer<?> findReferenceSerializer(SerializationConfig config, ReferenceType type, BeanDescription.Supplier beanDescRef, JsonFormat.Value formatOverrides, @Nullable TypeSerializer contentTypeSerializer, ValueSerializer<Object> contentValueSerializer) {
+            Class<?> raw = type.getRawClass();
             if (Omittable.class.isAssignableFrom(raw)) {
                 boolean staticTyping = (contentTypeSerializer == null) && config.isEnabled(MapperFeature.USE_STATIC_TYPING);
-                return new OmittableSerializer(refType, staticTyping, contentTypeSerializer, contentValueSerializer);
+                return new OmittableSerializer(type, staticTyping, contentTypeSerializer, contentValueSerializer);
             }
 
             return null;

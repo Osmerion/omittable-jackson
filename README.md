@@ -12,8 +12,9 @@ A support library providing a [Jackson](https://github.com/FasterXML/jackson) mo
 ## Usage
 
 ```java
-ObjectMapper mapper = new ObjectMapper();
-mapper.registerModule(new OmittableModule());
+ObjectMapper mapper = JsonMapper.builder()
+    .addModule(new OmittableModule())
+    .build();
 
 UserDto user = mapper.readValue(
     """
@@ -28,6 +29,13 @@ assert user.name().isPresent();
 assert user.birthday().isAbsent();
 ```
 
+
+### Compatibility
+
+| Jackson | Omittable - Jackson Integration |
+|---------|---------------------------------|
+| **3**.x | **2**.x                         |
+| **2**.x | **0**.x, **1**.x                |
 
 ## Building from source
 
