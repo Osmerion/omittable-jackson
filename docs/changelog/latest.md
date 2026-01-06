@@ -1,15 +1,21 @@
-### 0.5.0
+### 1.0.0
 
-_Released 2025 Sep 29_
+_Released 2026 Jan 06_
+
+#### Overview
+
+The modules providing support for integrating [Omittable](https://github.com/Osmerion/Omittable) with third-party
+libraries and frameworks have been split off into their own repositories to simplify development of current and future
+integrations.
+
+This repository now only contains the code for the `com.osmerion.omittable:omittable-jackson` artifact.
 
 #### Improvements
 
-- Implemented an `OmittableConverter` to convert wrapped values.
-    - This is done in a new `omittable-spring-core` artifact.
-    - Both WebFlux and WebMvc support artifacts automatically register the converter.
+- Serialization of omittable properties now always behaves as if `JsonInclude.Include.NON_ABSENT` was configured.
+    - Consequentially, it is no longer required to configure property inclusion for omittable properties.
+- The Jackson module now supports auto-registration via the JDK's service-loader mechanism.
 
 #### Fixes
 
-- Correctly guard SpringDoc-related autoconfiguration. [[GH-39](https://github.com/Osmerion/Omittable/issues/39)]
-    - This fixes an issue where application startup would fail if Swagger was present on the classpath but SpringDoc was
-      not.
+- The jackson-databind module is now required transitively when using this library on the module-path.
