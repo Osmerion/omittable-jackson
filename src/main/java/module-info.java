@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import com.fasterxml.jackson.databind.Module;
 import com.osmerion.omittable.jackson.OmittableModule;
 import org.jspecify.annotations.NullMarked;
 
@@ -25,5 +26,7 @@ module com.osmerion.omittable.jackson {
     requires transitive org.jspecify;
 
     exports com.osmerion.omittable.jackson;
+
+    provides Module with OmittableModule;
 
 }

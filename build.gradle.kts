@@ -67,6 +67,7 @@ dependencies {
     testImplementation(project.dependencies.platform(buildDeps.junit.bom))
     testImplementation(buildDeps.assertj.core)
     testImplementation(buildDeps.junit.jupiter.api)
+    testImplementation(buildDeps.junit.jupiter.params)
 
     testRuntimeOnly(buildDeps.junit.jupiter.engine)
     testRuntimeOnly(buildDeps.junit.platform.launcher)
