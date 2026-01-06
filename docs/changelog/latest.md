@@ -1,21 +1,13 @@
-### 1.0.0
+### 2.0.0
 
 _Released 2026 Jan 06_
 
 #### Overview
 
-The modules providing support for integrating [Omittable](https://github.com/Osmerion/Omittable) with third-party
-libraries and frameworks have been split off into their own repositories to simplify the development of current and
-future integrations.
+This release provides support for omittable types for Jackson 3.
 
-This repository now only contains the code for the `com.osmerion.omittable:omittable-jackson` artifact.
+#### Breaking Changes
 
-#### Improvements
-
-- Serialization of omittable properties now always behaves as if `JsonInclude.Include.NON_ABSENT` was configured.
-  - Consequently, it is no longer required to configure property inclusion for omittable properties.
-- The Jackson module now supports auto-registration via the JDK's service-loader mechanism.
-
-#### Fixes
-
-- The jackson-databind module is now required transitively when using this library on the module-path.
+- This release requires Jackson 3.
+- The module and root package has been renamed to `com.osmerion.omittable.jackson3` to support using Jackson 2 and
+  Jackson 3 omittable support simultaneously (in line with Jackson's own renaming).

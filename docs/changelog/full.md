@@ -1,3 +1,20 @@
+### 2.0.0
+
+_Released 2026 Jan 06_
+
+#### Overview
+
+This release provides support for omittable types for Jackson 3.
+
+#### Breaking Changes
+
+- This release requires Jackson 3.
+- The module and root package has been renamed to `com.osmerion.omittable.jackson3` to support using Jackson 2 and
+  Jackson 3 omittable support simultaneously (in line with Jackson's own renaming).
+
+
+---
+
 ### 1.0.0
 
 _Released 2026 Jan 06_
