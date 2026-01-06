@@ -14,7 +14,6 @@ A support library providing a [Jackson](https://github.com/FasterXML/jackson) mo
 ```java
 ObjectMapper mapper = new ObjectMapper();
 mapper.registerModule(new OmittableModule());
-mapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
 
 UserDto user = mapper.readValue(
     """
