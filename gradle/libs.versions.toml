@@ -1,7 +1,7 @@
 [libraries]
 # tools.jackson.core:jackson-databind - Jackson Databind
 # https://github.com/FasterXML/jackson-databind
-jackson-databind = { module = "tools.jackson.core:jackson-databind", version = "3.1.1" }
+jackson-databind = { module = "tools.jackson.core:jackson-databind", version = "3.1.2" }
 
 # com.osmerion.omittable:omittable - Omittable
 # https://github.com/Osmerion/Omittable
